@@ -61,8 +61,8 @@ export function Sidebar({ collapsed, onToggle, isMobile, mobileOpen, onCloseMobi
             showExpanded ? "" : "justify-center"
           )}>
             <div className="relative">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow-sm">
-                <Crown className="w-5 h-5 text-primary-foreground" />
+              <div className="w-9 h-9 rounded-xl bg-card/30 border border-border/60 flex items-center justify-center overflow-hidden">
+                <img src="/logo.png" alt="Leader Intelligence logo" className="h-7 w-7 object-contain" />
               </div>
               <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success animate-pulse border-2 border-sidebar" />
             </div>
