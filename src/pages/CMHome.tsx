@@ -84,7 +84,7 @@ export default function CMHome() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="flex items-center gap-3 mb-1">
             <h1 className="text-2xl font-bold text-foreground">{greeting}, Leader</h1>
@@ -97,7 +97,7 @@ export default function CMHome() {
             Here's your intelligence briefing for {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
-        <Button variant="outline" size="sm" className="gap-2 border-border/50 bg-muted/30 hover:bg-muted/50">
+        <Button variant="outline" size="sm" className="w-full md:w-auto gap-2 border-border/50 bg-muted/30 hover:bg-muted/50">
           <Activity className="w-4 h-4" />
           View Full Report
           <ArrowRight className="w-4 h-4" />

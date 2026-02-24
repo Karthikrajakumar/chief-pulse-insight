@@ -20,6 +20,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  isMobile: boolean;
+  mobileOpen: boolean;
+  onCloseMobile: () => void;
 }
 
 const navItems = [
@@ -34,15 +37,18 @@ const navItems = [
   { path: '/admin', icon: Settings, label: 'Admin', description: 'Settings & Roles' },
 ];
 
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar({ collapsed, onToggle, isMobile, mobileOpen, onCloseMobile }: SidebarProps) {
   const location = useLocation();
+  const showExpanded = isMobile || !collapsed;
 
   return (
     <TooltipProvider delayDuration={0}>
       <aside 
         className={cn(
-          "fixed left-0 top-0 z-50 h-screen bg-sidebar border-r border-sidebar-border transition-all duration-300 flex flex-col",
-          collapsed ? "w-[68px]" : "w-60"
+          "fixed left-0 top-0 z-50 h-screen bg-sidebar border-r border-sidebar-border transition-transform duration-300 flex flex-col",
+          "w-72 md:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          collapsed ? "md:w-[68px]" : "md:w-60"
         )}
         style={{
           background: 'linear-gradient(180deg, hsl(222 47% 10%) 0%, hsl(222 47% 7%) 100%)'
@@ -52,7 +58,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <div className="h-16 flex items-center justify-center px-3 border-b border-sidebar-border shrink-0">
           <div className={cn(
             "flex items-center gap-3 transition-all duration-300",
-            collapsed ? "justify-center" : ""
+            showExpanded ? "" : "justify-center"
           )}>
             <div className="relative">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow-sm">
@@ -60,13 +66,24 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               </div>
               <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success animate-pulse border-2 border-sidebar" />
             </div>
-            {!collapsed && (
+            {showExpanded && (
               <div className="overflow-hidden">
                 <h1 className="text-sm font-bold gradient-text">Leader</h1>
                 <p className="text-[10px] text-muted-foreground">Intelligence</p>
               </div>
             )}
           </div>
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-auto md:hidden text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
+              onClick={onCloseMobile}
+              aria-label="Close sidebar"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         {/* Navigation */}
@@ -84,6 +101,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                       ? "bg-gradient-to-r from-primary/20 to-primary/5 text-foreground" 
                       : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground"
                   )}
+                  onClick={() => {
+                    if (isMobile) {
+                      onCloseMobile();
+                    }
+                  }}
                 >
                   {/* Active indicator */}
                   {isActive && (
@@ -99,7 +121,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                     <item.icon className="h-[18px] w-[18px]" />
                   </div>
                   
-                  {!collapsed && (
+                  {showExpanded && (
                     <div className="flex flex-col min-w-0 flex-1">
                       <span className={cn(
                         "text-sm font-medium truncate transition-colors",
@@ -113,7 +135,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               
               return (
                 <li key={item.path}>
-                  {collapsed ? (
+                  {!showExpanded ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         {linkContent}
@@ -141,6 +163,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               collapsed ? "px-2" : "px-3"
             )}
             onClick={onToggle}
+            disabled={isMobile}
           >
             {collapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -155,17 +178,17 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           {/* Status */}
           <div className={cn(
             "mt-3 pt-3 border-t border-sidebar-border",
-            collapsed ? "text-center" : ""
+            showExpanded ? "" : "text-center"
           )}>
-            {!collapsed && (
+            {showExpanded && (
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <div className="relative">
                   <div className="w-2 h-2 rounded-full bg-success animate-pulse-subtle" />
                 </div>
-                <span>Live · Puducherry</span>
+                <span>Live - Puducherry</span>
               </div>
             )}
-            {collapsed && (
+            {!showExpanded && (
               <div className="flex justify-center">
                 <div className="w-2 h-2 rounded-full bg-success animate-pulse-subtle" />
               </div>

@@ -3,7 +3,7 @@ import { useFilters } from '@/contexts/FilterContext';
 import { districts, topics } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Download, RefreshCw, Search, Command } from 'lucide-react';
+import { Download, RefreshCw, Search, Command, Menu } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
@@ -13,9 +13,10 @@ import { motion } from 'framer-motion';
 
 interface GlobalHeaderProps {
   onOpenCommandPalette: () => void;
+  onToggleSidebar: () => void;
 }
 
-export function GlobalHeader({ onOpenCommandPalette }: GlobalHeaderProps) {
+export function GlobalHeader({ onOpenCommandPalette, onToggleSidebar }: GlobalHeaderProps) {
   const { filters, updateFilter } = useFilters();
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -55,23 +56,34 @@ export function GlobalHeader({ onOpenCommandPalette }: GlobalHeaderProps) {
       }}
     >
       <div className="max-w-[1600px] mx-auto px-4 lg:px-6 py-3">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           {/* Search - Triggers Command Palette */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search anything..."
-              className="pl-10 pr-24 bg-muted/30 border-border/50 focus:border-primary/50 focus:ring-primary/20 cursor-pointer"
-              onClick={onOpenCommandPalette}
-              readOnly
-            />
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none inline-flex h-6 select-none items-center gap-1 rounded border border-border/50 bg-muted/50 px-2 font-mono text-[10px] font-medium text-muted-foreground">
-              <Command className="w-3 h-3" />K
-            </kbd>
+          <div className="flex items-center gap-2 w-full md:flex-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden h-9 w-9 text-muted-foreground hover:text-foreground"
+              onClick={onToggleSidebar}
+              aria-label="Open sidebar"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+            <div className="relative flex-1 w-full md:max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search anything..."
+                className="pl-10 pr-10 sm:pr-24 bg-muted/30 border-border/50 focus:border-primary/50 focus:ring-primary/20 cursor-pointer"
+                onClick={onOpenCommandPalette}
+                readOnly
+              />
+              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border border-border/50 bg-muted/50 px-2 font-mono text-[10px] font-medium text-muted-foreground">
+                <Command className="w-3 h-3" />K
+              </kbd>
+            </div>
           </div>
 
           {/* Filters */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <Select value={filters.timeRange} onValueChange={(v) => updateFilter('timeRange', v as any)}>
               <SelectTrigger className="w-28 h-9 text-xs bg-muted/30 border-border/50 hover:bg-muted/50 transition-colors">
                 <SelectValue />
@@ -114,7 +126,7 @@ export function GlobalHeader({ onOpenCommandPalette }: GlobalHeaderProps) {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto md:justify-end">
             {/* Data Freshness Indicator */}
             <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/30 border border-border/50">
               <span className="w-2 h-2 rounded-full bg-success animate-pulse" />

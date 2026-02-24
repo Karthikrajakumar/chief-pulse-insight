@@ -14,9 +14,29 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 768px)');
+    const handleChange = () => setIsMobile(media.matches);
+    handleChange();
+    media.addEventListener('change', handleChange);
+    return () => media.removeEventListener('change', handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarCollapsed(false);
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
+    setMobileSidebarOpen(false);
+  }, [location.pathname]);
 
   // Handle keyboard shortcut for command palette
   useEffect(() => {
@@ -30,7 +50,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         setShortcutsOpen(true);
       }
       // Toggle sidebar with Cmd/Ctrl + \
-      if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+      if ((e.metaKey || e.ctrlKey) && e.key === '\\' && !isMobile) {
         e.preventDefault();
         setSidebarCollapsed(prev => !prev);
       }
@@ -38,7 +58,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [commandPaletteOpen]);
+  }, [commandPaletteOpen, isMobile]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,13 +102,29 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         />
       </div>
       
-      <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
+      {isMobile && mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
+      <Sidebar
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        isMobile={isMobile}
+        mobileOpen={mobileSidebarOpen}
+        onCloseMobile={() => setMobileSidebarOpen(false)}
+      />
       
       <div className={cn(
-        "relative transition-all duration-300",
-        sidebarCollapsed ? "ml-[68px]" : "ml-60"
+        "relative transition-all duration-300 ml-0",
+        sidebarCollapsed ? "md:ml-[68px]" : "md:ml-60"
       )}>
-        <GlobalHeader onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
+        <GlobalHeader
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+          onToggleSidebar={() => setMobileSidebarOpen(true)}
+        />
         <BreakingTicker />
         
         <main className="p-4 lg:p-6">

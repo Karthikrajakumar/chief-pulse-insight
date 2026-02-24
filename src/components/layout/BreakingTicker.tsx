@@ -26,7 +26,7 @@ export function BreakingTicker() {
         background: 'linear-gradient(90deg, hsl(0 60% 12%) 0%, hsl(222 47% 11%) 50%, hsl(0 60% 12%) 100%)'
       }}
     >
-      <div className="max-w-[1600px] mx-auto flex items-center gap-4 py-2.5 px-4">
+      <div className="max-w-[1600px] mx-auto flex flex-col items-start gap-3 py-2.5 px-4 sm:flex-row sm:items-center">
         {/* Label */}
         <div className="shrink-0 flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30">
           <Radio className="w-3 h-3 text-primary animate-pulse" />
@@ -35,7 +35,7 @@ export function BreakingTicker() {
         
         {/* Ticker Content */}
         <div className="flex-1 overflow-hidden">
-          <div className="flex items-center gap-3 fade-in" key={currentNews.id}>
+          <div className="flex flex-wrap items-center gap-3 fade-in" key={currentNews.id}>
             {(currentNews.severity === 'critical' || currentNews.severity === 'high') && (
               <AlertTriangle className={cn(
                 "w-4 h-4 shrink-0",
@@ -55,7 +55,7 @@ export function BreakingTicker() {
               {currentNews.severity}
             </span>
             <span className={cn(
-              "text-sm font-medium truncate",
+              "text-sm font-medium leading-snug sm:truncate",
               currentNews.severity === 'critical' 
                 ? "text-destructive" 
                 : currentNews.severity === 'high'
@@ -64,7 +64,7 @@ export function BreakingTicker() {
             )}>
               {currentNews.title}
             </span>
-            <span className="text-xs text-muted-foreground px-2 py-0.5 rounded bg-muted/30 shrink-0">
+            <span className="text-xs text-muted-foreground px-2 py-0.5 rounded bg-muted/30 shrink-0 hidden sm:inline-flex">
               {currentNews.source}
             </span>
           </div>
@@ -72,7 +72,7 @@ export function BreakingTicker() {
 
         {/* Dots indicator */}
         {displayNews.length > 1 && (
-          <div className="flex gap-1.5 shrink-0">
+          <div className="hidden sm:flex gap-1.5 shrink-0">
             {displayNews.map((_, idx) => (
               <button
                 key={idx}

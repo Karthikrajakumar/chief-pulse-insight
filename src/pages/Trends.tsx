@@ -135,7 +135,7 @@ export default function Trends() {
             </div>
             <div className="px-4 py-2 rounded-xl bg-primary/10 backdrop-blur border border-primary/20">
               <p className="text-xs text-muted-foreground">Top Hashtag</p>
-              <p className="text-sm font-bold text-primary">{topHashtag.tag}</p>
+              <p className="text-sm font-bold text-primary break-all sm:break-words max-w-[10rem] sm:max-w-none">{topHashtag.tag}</p>
             </div>
           </div>
         </div>
